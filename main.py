@@ -1,24 +1,23 @@
-import requests
+import urllib.request
+import json
 
-def get_random_joke():
-    # URL відкритого API з анекдотами
+def get_joke_no_install():
     url = "https://official-joke-api.appspot.com/random_joke"
     
     try:
-        # Виконуємо запит до API
-        response = requests.get(url)
-        response.raise_for_status()  # Перевірка на помилки запиту
-        
-        # Парсимо отриманий JSON
-        joke_data = response.json()
-        
-        # Виводимо анекдот у консоль
-        print(f"--- Random Joke ---")
-        print(f"Setup: {joke_data['setup']}")
-        print(f"Punchline: {joke_data['punchline']}")
-        
+        # Виконуємо запит за допомогою вбудованої urllib
+        with urllib.request.urlopen(url) as response:
+            if response.getcode() == 200:
+                # Читаємо та декодуємо дані
+                data = response.read().decode('utf-8')
+                # Парсимо JSON
+                joke_data = json.loads(data)
+                
+                print("--- Random Joke (urllib) ---")
+                print(f"Setup: {joke_data['setup']}")
+                print(f"Punchline: {joke_data['punchline']}")
     except Exception as e:
-        print(f"Сталася помилка при отриманні анекдоту: {e}")
+        print(f"Помилка: {e}")
 
 if __name__ == "__main__":
-    get_random_joke()
+    get_joke_no_install()
